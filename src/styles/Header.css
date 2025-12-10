@@ -1,0 +1,41 @@
+/* src/styles/Header.css */
+.main-header {
+    background-color: #004d99;
+    color: white;
+    height: 60px;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.main-header .logo a {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+
+.nav-menu a:hover {
+    color: #e6e6e6;
+}
+
+.login-btn {
+    border: 1px solid white;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+}
