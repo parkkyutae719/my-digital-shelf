@@ -3,15 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DDC_CATEGORIES } from '../data/DDC';
+import BookCard from '../components/BookCard';
 import '../styles/Main.css';
 
 function Main() {
   const [searchTerm, setSearchTerm] = useState('');
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [searchField, setSearchField] = useState('all');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const API_URL = 'https://www.googleapis.com/books/v1/volumes?q=subject:technology+popular&maxResults=5';
+    // API 최대 허용치인 40개로 요청 수정
+    const API_URL = 'https://www.googleapis.com/books/v1/volumes?q=subject:technology+popular&maxResults=40';
     
     const fetchRecommendedBooks = async () => {
       try {
@@ -27,7 +30,13 @@ function Main() {
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+      let queryPrefix = '';
+      if (searchField === 'title') { queryPrefix = 'intitle:'; } 
+      else if (searchField === 'author') { queryPrefix = 'inauthor:'; } 
+      else if (searchField === 'subject') { queryPrefix = 'subject:'; } 
+
+      // 접두사를 붙여 쿼리를 Search 페이지로 전달
+      navigate(`/search?q=${encodeURIComponent(queryPrefix + searchTerm)}&field=${searchField}`);
     }
   };
 
@@ -38,7 +47,8 @@ function Main() {
   };
 
   const handleCategoryClick = (keyword) => {
-    navigate(`/search?q=subject:${encodeURIComponent(keyword)}`); 
+    // DDC 퀵메뉴 클릭 시 접두사를 붙여 쿼리를 전달
+    navigate(`/search?q=subject:${encodeURIComponent(keyword)}&field=subject`); 
   };
 
   return (
@@ -46,6 +56,18 @@ function Main() {
       
       <section className="hero-search-section">
         <div className="search-input-group">
+          {/* 검색 필터 UI */}
+          <select 
+            value={searchField} 
+            onChange={(e) => setSearchField(e.target.value)}
+            className="search-field-select"
+          >
+            <option value="all">통합 검색</option>
+            <option value="title">도서명</option>
+            <option value="author">저자</option>
+            <option value="subject">카테고리</option>
+          </select>
+
           <input 
             type="text" 
             placeholder="도서명, 저자, 카테고리 통합 검색"
@@ -76,18 +98,7 @@ function Main() {
         <h2>🔥 신착/추천 도서 목록</h2>
         <div className="book-list-grid">
           {recommendedBooks.map((book) => (
-            <div 
-              key={book.id} 
-              className="book-card"
-              onClick={() => navigate(`/detail/${book.id}`)} 
-            >
-              <img 
-                src={book.volumeInfo.imageLinks?.thumbnail || '/placeholder-book.png'} 
-                alt={book.volumeInfo.title} 
-              />
-              <p className="book-title">{book.volumeInfo.title}</p>
-              <p className="book-author">{book.volumeInfo.authors?.join(', ')}</p>
-            </div>
+            book.volumeInfo && <BookCard key={book.id} book={book} />
           ))}
         </div>
       </section>

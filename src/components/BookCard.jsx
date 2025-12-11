@@ -2,20 +2,22 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-// BookCard.css 파일을 styles 폴더에 추가하여 Main.css의 카드 스타일을 재사용하거나 확장합니다.
 import '../styles/Main.css'; 
+
+const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/128x192.png?text=No+Cover'; 
 
 function BookCard({ book }) {
   const navigate = useNavigate();
 
-  // 도서 정보를 안전하게 추출
   const title = book.volumeInfo.title || '제목 정보 없음';
   const authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : '저자 정보 없음';
-  const thumbnail = book.volumeInfo.imageLinks?.thumbnail || '/placeholder-book.png';
   
-  // 상세 페이지로 이동
+  // 유효한 외부 URL 사용 (이미지 공백 문제 해결)
+  const thumbnail = book.volumeInfo.imageLinks?.thumbnail || PLACEHOLDER_IMAGE;
+  
   const handleCardClick = () => {
-    navigate(`/detail/${book.id}`); 
+    // Detail 페이지 구현 전이므로 임시 처리
+    alert(`상세 정보: ${title} (Detail 페이지 구현 예정)`);
   };
 
   return (
